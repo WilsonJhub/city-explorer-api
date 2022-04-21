@@ -17,6 +17,7 @@ const cors = require('cors')
 const express = require('express');
 require('dotenv').config();
 const weatherData = require('./weather.json');
+const {default: axios} = require('axios');
 
 
 
@@ -43,21 +44,23 @@ const weatherKey = process.env.WEATHER_API_KEY;
 // the first parameter is the URL in quotes
 
 app.get('/weather', async (request, response) => {
-  let searchQuery = request.query.data
-  // let foundCity = weatherData.find(city => city.city_name.toLowerCase() === searchQuery.toLowerCase())
+  let searchQuery = request.query.searchQuery
+  // let foundCity = url.find(city => city.city_name.toLowerCase() === searchQuery.toLowerCase())
 
-  let url = (`https://api.weatherbit.io/v2.0/forecast/daily?city=${searchQuery}&key=${weatherKey}`)
+
+
+  let url = `https://api.weatherbit.io/v2.0/forecast/daily?city=${searchQuery}&key=${weatherKey}`
 console.log(url);
   
   try{
     let dataToSend = await axios.get(url)
-    
+      console.log('*********** THIS IS YOUR PROBLEM ***********', dataToSend, '*********** THIS IS YOUR PROBLEM ***********');
+     
+      response.send(dataToSend.data)
+
       
+    // let forcastArr = url.data.map(day => new Forcast (day))
       
-    // let forcastArr = foundCity.data.map(day => new Forcast (day))
-      
-      
-      response.send(dataToSend.data.data)
       
     }catch(error){
       console.log('Could not find city', error);
