@@ -54,12 +54,10 @@ console.log(url);
   
   try{
     let dataToSend = await axios.get(url)
-      console.log('*********** THIS IS YOUR PROBLEM ***********', dataToSend, '*********** THIS IS YOUR PROBLEM ***********');
-     
-      response.send(dataToSend.data)
+        console.log('*********** THIS IS YOUR PROBLEM ***********', dataToSend, '*********** THIS IS YOUR PROBLEM ***********');
+    response.send(dataToSend.data)
 
-      
-    // let forcastArr = url.data.map(day => new Forcast (day))
+    let forcastArr = url.data.map(day => new Forcast (day))
       
       
     }catch(error){
