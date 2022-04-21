@@ -30,6 +30,9 @@ const app = express();
 app.use(cors())
 // define PORT and validate that my env is working
 const PORT = process.env.PORT || 3002;
+const weatherKey = process.env.WEATHER_API_KEY;
+// const movieKey = process.env.MOVIE_API_KEY
+
 
 // I know that something is wrong with my env or how i'm importing it if my server is running on 3002.
 
@@ -39,25 +42,31 @@ const PORT = process.env.PORT || 3002;
 // app.get correlate to axios.get
 // the first parameter is the URL in quotes
 
-app.get('/weather', (request, response) => {
-  let searchQuery = request.query.searchQuery
-  let foundCity = weatherData.find(city => city.city_name.toLowerCase() === searchQuery.toLowerCase())
-  
+app.get('/weather', async (request, response) => {
+  let searchQuery = request.query.data
+  // let foundCity = weatherData.find(city => city.city_name.toLowerCase() === searchQuery.toLowerCase())
+
+  let url = (`https://api.weatherbit.io/v2.0/forecast/daily?city=${searchQuery}&key=${weatherKey}`)
+console.log(url);
   
   try{
-    let forcastArr = foundCity.data.map(day => new Forcast (day))
-
-
-    response.send(forcastArr)
+    let dataToSend = await axios.get(url)
     
-  }catch(error){
-    console.log('Could not find city', error);
-  }
-
-  console.log(request.query.lat);
-
-
-})
+      
+      
+    // let forcastArr = foundCity.data.map(day => new Forcast (day))
+      
+      
+      response.send(dataToSend.data.data)
+      
+    }catch(error){
+      console.log('Could not find city', error);
+    }
+    
+    console.log(request.query.lat);
+    
+    
+  })
 
 function Forcast(day) {
   this.date = day.datetime
