@@ -67,7 +67,7 @@ console.log(searchQuery);
 
 
 
-// MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES  
+// MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES---MOVIES  
 
 // searchMovies will request a query through the movies available from the API key once the URL is created. NOTE: We are only using .searchQuery because that is what we called it ---let url = `${process.env.REACT_APP_SERVER}/weather?searchQuery=${name}`)--- inside of our front-end. So we want to make sure that we are keeping that .searchQuery the same. 
 
@@ -104,7 +104,7 @@ function Forcast(day) {
 function Showing(movie) {
   let someVariable = movie.poster_path !== null? movie.poster_path: ''
   // 'https://image.tmdb.org/t/p/w300' + poster_path ORRR image_url
-  this.title = movie.title
+  this.title = movie.title                
   this.overview = movie.overview
   this.vote_average = movie.vote_average
   this.total_votes = movie.vote_count
