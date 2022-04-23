@@ -13,11 +13,20 @@ const { request } = require('express');
 // In our servers, we have to 'require' instead of import. 
 // Here we will list the requirement for a server. 
 
-const cors = require('cors')
+require('dotenv').config();
+const cors = require('cors');
 const express = require('express');
 const weatherData = require('./weather.json');
-const {default: axios} = require('axios');
-require('dotenv').config();
+const axios = require('axios');
+const handleHome = require('./handleHome');
+const weather = require('./weather');
+const movies = require('./movies');
+
+const app = express();
+const PORT = process.env.PORT || 3002;
+
+// const weatherKey = process.env.WEATHER_API_KEY;
+// const movieKey = process.env.MOVIE_API_KEY;
 // ***************************************************************** REQUIRES *****************************************************************
 
 
@@ -30,41 +39,46 @@ require('dotenv').config();
 // I know that something is wrong with my env or how i'm importing it if my server is running on 3002.
 // define PORT and validate that my .env is working
 
-const app = express();
-app.use(cors())
-const PORT = process.env.PORT || 3002;
-const weatherKey = process.env.WEATHER_API_KEY;
-const movieKey = process.env.MOVIE_API_KEY;
+
+
+
+
 // ***************************************************************** USE /> *****************************************************************
 
 // ***************************************************************** <ROUTES *****************************************************************
+
 // We will use these as our *** ENDPOINT ***
 // create a basic default route. 
 // app.get correlate to axios.get
 // the first parameter is the URL in quotes
 
 
+app.use(cors())
+app.get('/', handleHome);
+app.get('/weather', weather);
+app.get('/movies', movies);
+// app.get('./cache', cache)
 // WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---
-app.get('/weather', async (request, response, next) => {       
-  let searchQuery = request.query.searchQuery            
-  // This is querying through .searchQuery 
-console.log(searchQuery);
-  let url = `https://api.weatherbit.io/v2.0/forecast/daily?city=${searchQuery}&key=${weatherKey}`
-  // console.log(url);
-  try{
-    // Setting variable that accesses the weather bit API (dataToSend)
-    let dataToSend = await axios.get(url)
-    console.log(dataToSend.data);
+// app.get('/weather', async (request, response, next) => {       
+//   let searchQuery = request.query.searchQuery            
+//   // This is querying through .searchQuery 
+// console.log(searchQuery);
+//   let url = `https://api.weatherbit.io/v2.0/forecast/daily?city=${searchQuery}&key=${weatherKey}`
+//   // console.log(url);
+//   try{
+//     // Setting variable that accesses the weather bit API (dataToSend)
+//     let dataToSend = await axios.get(url)
+//     console.log(dataToSend.data);
 
-    let forcastArr = dataToSend.data.data.map(day => new Forcast (day))
-    response.send(forcastArr)
-    // console.log(forcastArr);
+//     let forcastArr = dataToSend.data.data.map(day => new Forcast (day))
+//     response.send(forcastArr)
+//     // console.log(forcastArr);
     
-  }catch(error){
-    next(error);
-    // console.log('Could not find city', error);
-  }
-})
+//   }catch(error){
+//     next(error);
+//     // console.log('Could not find city', error);
+//   }
+// })
 
 
 
@@ -72,48 +86,53 @@ console.log(searchQuery);
 
 // searchMovies will request a query through the movies available from the API key once the URL is created. NOTE: We are only using .searchQuery because that is what we called it ---let url = `${process.env.REACT_APP_SERVER}/weather?searchQuery=${name}`)--- inside of our front-end. So we want to make sure that we are keeping that .searchQuery the same. 
 
-app.get('/movies', async (request, response) => {
-  let searchQuery = request.query.searchQuery;
-  console.log(`searchQuery: ${searchQuery}`);
 
-  let url = `https://api.themoviedb.org/3/search/movie?api_key=${movieKey}&query=${searchQuery}`;
-  console.log(url);
-  try{
-    let movieResponse = await axios.get(url)
-    console.log(movieResponse);
 
-    let movieArr = movieResponse.data.results.map(theatre => new Showing(theatre))
-    response.send(movieArr);
-    // response.send(movieResponse.data.results)
-  }catch(error){
-    // console.log('Theatre not available');
-  }
+// app.get('/movies', async (request, response) => {
+//   let searchQuery = request.query.searchQuery;
+//   console.log(`searchQuery: ${searchQuery}`);
 
-})
+//   let url = `https://api.themoviedb.org/3/search/movie?api_key=${movieKey}&query=${searchQuery}`;
+//   console.log(url);
+
+
+
+//   try{
+//     let movieResponse = await axios.get(url)
+//     console.log(movieResponse);
+
+//     let movieArr = movieResponse.data.results.map(theatre => new Showing(theatre))
+//     response.send(movieArr);
+//     // response.send(movieResponse.data.results)
+//   }catch(error){
+//     // console.log('Theatre not available');
+//   }
+
+// })
 
 
 
 
   // Forecast is constructing a new data sets from the API for each 'day' and then pulling the specific data that I am looking for by saying day.daytime   and day.weather.decription.
-function Forcast(day) {
-  this.date = day.datetime
-  this.description = day.weather.description
-  // console.log(day);
-}
+// function Forcast(day) {
+//   this.date = day.datetime
+//   this.description = day.weather.description
+//   // console.log(day);
+// }
 
 // Showing is constructing a new data set from the API 'movie' and the pulling the specific data that has been requested by using 'movie.title, movie.overview, movie.vote_average, etc, etc...
-function Showing(movie) {
-  let someVariable = movie.poster_path !== null? movie.poster_path: ''
-  // 'https://image.tmdb.org/t/p/w300' + poster_path ORRR image_url
-  // this.title = movie.title is referring to .....
-  this.title = movie.title                
-  this.overview = movie.overview
-  this.vote_average = movie.vote_average
-  this.total_votes = movie.vote_count
-  this.image_url = someVariable
-  this.popularity = movie.popularity
-  this.released_on = movie.release_date
-}
+// function Showing(movie) {
+//   let someVariable = movie.poster_path !== null? movie.poster_path: ''
+//   // 'https://image.tmdb.org/t/p/w300' + poster_path ORRR image_url
+//   // this.title = movie.title is referring to .....
+//   this.title = movie.title                
+//   this.overview = movie.overview
+//   this.vote_average = movie.vote_average
+//   this.total_votes = movie.vote_count
+//   this.image_url = someVariable
+//   this.popularity = movie.popularity
+//   this.released_on = movie.release_date
+// }
 
   
 // at the bottom of all of our routes
