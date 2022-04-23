@@ -45,7 +45,7 @@ const movieKey = process.env.MOVIE_API_KEY;
 
 
 // WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---WEATHER---
-app.get('/weather', async (request, response) => {       
+app.get('/weather', async (request, response, next) => {       
   let searchQuery = request.query.searchQuery            
   // This is querying through .searchQuery 
 console.log(searchQuery);
@@ -61,6 +61,7 @@ console.log(searchQuery);
     // console.log(forcastArr);
     
   }catch(error){
+    next(error);
     // console.log('Could not find city', error);
   }
 })
@@ -100,10 +101,11 @@ function Forcast(day) {
   // console.log(day);
 }
 
-// 
+// Showing is constructing a new data set from the API 'movie' and the pulling the specific data that has been requested by using 'movie.title, movie.overview, movie.vote_average, etc, etc...
 function Showing(movie) {
   let someVariable = movie.poster_path !== null? movie.poster_path: ''
   // 'https://image.tmdb.org/t/p/w300' + poster_path ORRR image_url
+  // this.title = movie.title is referring to .....
   this.title = movie.title                
   this.overview = movie.overview
   this.vote_average = movie.vote_average
