@@ -17,7 +17,9 @@ const movies = async (request, response) => {
 
 
   let key = 'movie: ' + request.query.searchQuery;
-  if (cache[key] && (Date.now()- cache [key].timestamp < 50000)){
+  // 1month = tooOld
+  let tooOld = 1000 * 60 
+  if (cache[key] && (Date.now() - cache[key].timestamp < tooOld)){
     console.log('cachehit');
   } else{
   cache[key]= {};
